@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-16 11:10:39
+ * @LastEditTime: 2022-02-16 11:21:41
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -198,15 +198,15 @@
 ## GitHub 使用方法：push, pull 實作
 在Git上面新增一個txt檔後pull下來
 ### Git pull 前的遠端與本地端
-<img src="pull.png">
-<img src="pull2.png">
+<img src="pic/pull.png">
+<img src="pic/pull2.png">
 
 ### Git pull後的遠端與本地端
-<img src="pull3.png">
+<img src="pic/pull3.png">
 
 ### Git push成功（使用Conventional Commit）
-> <img src="push.png">
-> <img src="push2.png">
+> <img src="pic/push.png">
+> <img src="pic/push2.png">
 ## GitFlow 介紹
 > ### 1.Git Flow
 > 根據建議主要分支有：master、develop、hotfix、release與feature
