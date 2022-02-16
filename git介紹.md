@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-16 13:58:35
+ * @LastEditTime: 2022-02-16 14:03:00
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -93,8 +93,7 @@
 > 4. commit在指向tree物件
 > 5. 目前的master物件指向新的commit，head再指向master
 
-<img src="pic/gitflow
-.png">
+<img src="pic/gitflow.png">
 
 
 > ### 第二次commit實際運作說明
@@ -103,8 +102,8 @@
 > 8. 因而又生成新的tree物件來對應新的blob物件，但由於有一個blob（原先有兩個但只有跟動一個）並沒有改變，因此此tree 除了指向新的blob外，也會指向未改變的blob
 > 9. 為了新的tree也會生成一個新的commit，此commit除了會指向新的tree外也會指向上一個commit
 > 10. master 與 head 會往前至新的commit
-<img src="pic/gitflow2
-.png">
+
+<img src="pic/gitflow2.png">
 
 > ### 第三次commit實際運作說明
 > 11. 前面有提及，git是以檔案內容變更為依據。因此如果現在新增一個 <b>檔名不同但內容與第二次commit相同的內容</b>後會發生什麼事呢？
@@ -112,6 +111,7 @@
 > 13. git commit 後產生的新物件會指向<b>內容已存在的blob</b>以及沒有異動的blob物件
 > 14. 因應新的tree會生成相對應的commit，會指向新的tree與上一個commit 
 > 15. master 與 head 會往前至新的commit
+
 <img src="pic/gitflow3.png">
 
 > #### SHA1演算法補充：
