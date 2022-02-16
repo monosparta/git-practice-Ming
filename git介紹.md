@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-15 17:24:32
+ * @LastEditTime: 2022-02-16 11:10:39
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -145,6 +145,7 @@
     
 ## 分支的使用方法
 > 在版本控制中的分支「機制」，主要目的是為了解決開發過程中版本衝突的問題，然而同時也不少的版本問也是因為開始使用分支後而產生的。
+>是指向某個commit的指標
 
 > ### git branch "分支名稱"
 >建立一個分支
@@ -223,6 +224,24 @@
 
 >#### <b>Release分支</b>
 >當認為Develop分支夠成熟了，就可以把Develop分支合併到Release分支，在這邊進行算是上線前的最後測試。測試完成後會同時合併到Master分支與Develop這兩個分支上。同步到Develop分支的目的，是因為可能在Release分支上還會測到並修正一些問題，所以需要跟Develop分支同步。
+
+<hr>
+
+## git 進階指令
+> ### git gc 
+>手動將過期且不被使用的物件清除掉
+
+> ### git fsck
+> 檢查Git維護的檔案系統是否完整
+>
+<hr>
+
+## 雜紀錄
+
+> ### git add . V.S. git add -all 的差別
+><b> -all 是不管專案的哪一層皆會作用 <br> . 為執行檔案的同一層以及子目錄作用</b>
+
+
 
 參考資料：
 <li>https://www.dazhuanlan.com/lunny/topics/1191001
