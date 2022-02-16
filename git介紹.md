@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-16 11:21:41
+ * @LastEditTime: 2022-02-16 13:58:35
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -64,10 +64,74 @@
 
 
 ## 版本控制（workflow）的邏輯說明
->工作流即為工作流程時，從架構中的一個元素到下一個元素的工作流程進展，可以從連結架構中的元素來定義工作流程的邏輯流程，也就是分支管理政策。
->工作流不涉及任何命令，因為他就是一個規則，由開發者進行定義並且遵守。
+
+>在說明邏輯前，我們必須先知道一些基本知識
+<br>
+
+>* 什麼是版本：每完成一個任務，檔案與目錄每一次的狀態變化
+>* Git 只是個內容追蹤軟體，僅在乎內容不在乎檔案或目錄的名稱
+> * Git 是拍快照的方式記錄檔案之間的差異
+> * Git 物件的檔名以SHA1演算法
+> * Git物件的內容為檔案內容+壓縮
+> * Git 中的四個基本物件：
+>> 1. blob：跟檔案有關
+>> 2. commit：存放Commit相關
+>> 3. tree：與目錄相關
+>> 4. tag：存放Tag相關
+
+> ### 整個運作邏輯說明
+> 1. 當你開始把檔案交到站存區後，blob物件便開始生成
+> 2. 提交commit指令，開始生成tree物件，由tree物件紀錄檔案與目錄等資訊，因此會指向目錄與物件也可能指向其他的tree物件
+> 3. <b> 完成 </b>commit 之後，會生成commit物件，commit物件會指向方才的tree與前一個commit物件
+> 4. tag物件會指向某個commit物件
+<img src="pic/RelationshipOfGitObject.png">
+
+> ### 第一次commit實際運作說明
+> 1. 當你新增一個檔案的時候，檔案通常為untrack
+> 2. git add 會將檔案放置git站存區，此時blob物件便開始生成
+> 3. git commit 後，git 根據造出tree物件，tree物件會指向它所包含的blob物件，以及上衣個tree物件
+> 4. commit在指向tree物件
+> 5. 目前的master物件指向新的commit，head再指向master
+
+<img src="pic/gitflow
+.png">
 
 
+> ### 第二次commit實際運作說明
+> 6. 修改blob內容，檔案狀態為modified
+> 7. 再使用add使用加入暫存區後，由於檔案不一樣，因此根據SHA1演算法會生成新的blob物件
+> 8. 因而又生成新的tree物件來對應新的blob物件，但由於有一個blob（原先有兩個但只有跟動一個）並沒有改變，因此此tree 除了指向新的blob外，也會指向未改變的blob
+> 9. 為了新的tree也會生成一個新的commit，此commit除了會指向新的tree外也會指向上一個commit
+> 10. master 與 head 會往前至新的commit
+<img src="pic/gitflow2
+.png">
+
+> ### 第三次commit實際運作說明
+> 11. 前面有提及，git是以檔案內容變更為依據。因此如果現在新增一個 <b>檔名不同但內容與第二次commit相同的內容</b>後會發生什麼事呢？
+> 12. git add 後便<b>不會</b>生成新的blob！
+> 13. git commit 後產生的新物件會指向<b>內容已存在的blob</b>以及沒有異動的blob物件
+> 14. 因應新的tree會生成相對應的commit，會指向新的tree與上一個commit 
+> 15. master 與 head 會往前至新的commit
+<img src="pic/gitflow3.png">
+
+> #### SHA1演算法補充：
+>* 40個16進位字元組成
+>* 很微小的機率才會有碰撞
+
+
+
+> #### Git中Blob物件的SHA1計算公式如下：
+>> 1. 「blob」字樣
+>> 2. 1個空白字元
+>> 3. 輸入內容長度
+>> 4. Null 結束符號
+>> 5. 輸入內容
+
+
+
+
+
+'為什麼要使用他的根本原因'
 
 > ### 補充關於差分編碼編碼邏輯（workflow）
 >版本號由3部分構成，即主版本號+次版本號+修改號。
@@ -233,7 +297,9 @@
 
 > ### git fsck
 > 檢查Git維護的檔案系統是否完整
->
+
+>### git hash-object 
+> 計算出Blob的SHA1的值
 <hr>
 
 ## 雜紀錄
@@ -260,7 +326,7 @@
 <li>https://github.com/hahaicanfly/Learn-Git-in-30-days/blob/master/zh-tw/08.md
 
 <li>https://github.com/hahaicanfly/Learn-Git-in-30-days/blob/master/zh-tw/18.md
-
+<li>https://www.youtube.com/watch?v=LgTf7m5B0xA
 
 太複雜改天再跟著教學研究
 https://github.com/hahaicanfly/Learn-Git-in-30-days/blob/master/zh-tw/23.md
