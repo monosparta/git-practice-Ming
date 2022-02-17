@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-16 14:03:00
+ * @LastEditTime: 2022-02-17 11:25:20
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -73,14 +73,33 @@
 > * Git 是拍快照的方式記錄檔案之間的差異
 > * Git 物件的檔名以SHA1演算法
 > * Git物件的內容為檔案內容+壓縮
-> * Git 中的四個基本物件：
->> 1. blob：跟檔案有關
->> 2. commit：存放Commit相關
->> 3. tree：與目錄相關
->> 4. tag：存放Tag相關
 
-> ### 整個運作邏輯說明
-> 1. 當你開始把檔案交到站存區後，blob物件便開始生成
+
+> ###  Git 中的四個基本物件：
+>> 1. blob物件：跟檔案內容有關,當執行git add指令的同時，新增檔案的內容會被寫入blob物件，檔名則為物件內容的雜湊運算結果，<b>檔案時間、原本的檔名或其他資訊則是儲存到tree的物件</b>
+
+>> 2. tree物件：與目錄資訊相關，會儲存特定目錄下的所有資訊、包含該目錄下的檔名、對應的blob物件名稱、檔案連結（symbolic link）或其他tree物件。簡單來說就是tree物件是特定版本下某個資料夾的快照。
+
+>> 3. commit：用來記錄有哪些tree物件包含在版本中，一個Commit物件代表著git一次的提交，紀錄定接版本中有那些tree物件、以及版本提交的時間、紀錄訊息等等。通常還會記錄上一層commit物件名稱。
+
+>> 4. tag：是一個容器，通常用來關聯一個Commit物件（也可以關聯到特定blob、tree物件），並儲存一些額外的參考資訊。EX：tag名稱。通常大多使用tag是為了將某版本的commit物件標記特殊意義的名稱或發行版本。
+
+
+> ### 闡述觀念間的關係
+>1. 要使用Git版本控制，必須建立「工作目錄」與「版本庫」。(mkdir、git init)
+>2. 你要先在「工作目錄」進行開發，如建立目錄、建立檔案、修改檔案等操作。
+>3. 然後當你想提交一個新版本Git到「儲存庫」裡，一定要先更新「索引」狀態。（git add,git mv,）
+>4. Git 會依據「索引」當下的狀態，決定把那些檔案提交到Git的「儲存庫」裡。
+>5. 最後提交變更時（git commit），才會把版本資訊寫到「物件儲存區」當中（寫入commit物件）。
+
+> * 要看出blob檔案版本間的關係，就要透過tree物件（資料夾的快照）與Commit物件（每一個版本之間的快照），才能關聯出blob與版本的關係。
+
+> ### Git 如何存放這些物件
+> * 所有物件都會以zlib演算法進行壓縮，不僅提升檔案存取效率也在日後的封裝（pack）的時候也可以利用差異壓縮（delta compression）演算法來節省間，並自動找出相似的blobs，並自動計算出blob之間的變化差異，再將這些差異儲存名為packfile的檔案中，大幅節省磁碟空間的耗用。
+
+
+> ### 整個運作邏輯範例
+> 1. 當你開始把檔案交到戰存區後，blob物件便開始生成
 > 2. 提交commit指令，開始生成tree物件，由tree物件紀錄檔案與目錄等資訊，因此會指向目錄與物件也可能指向其他的tree物件
 > 3. <b> 完成 </b>commit 之後，會生成commit物件，commit物件會指向方才的tree與前一個commit物件
 > 4. tag物件會指向某個commit物件
@@ -114,6 +133,17 @@
 
 <img src="pic/gitflow3.png">
 
+><br>
+> ### 物件結構的優點
+> #### * 有效率的處理大型專案
+>> 不僅僅是完整的版本庫會複製（clone）一份在本機，由於所有的blob物件都是透過「內容」來定址的（content addressable），因此不同版本之間找尋相同的內容，效率是非常高的。
+> #### 歷史紀錄保護
+>>Git版控的過程，每次提交變更都會產生一個Commit物件，而這個Commit物件的名稱又是透過commit物件的內容產生。再者，Commit物件會關聯到tree物件，tree物件的名稱又是關聯到blob與tree物件，在一層層的關聯下去，要竄改某個版本的歷史紀錄困難度很高。<br>由於儲存庫經常被clone或fork，只要是被clone過的儲存庫，來源的儲存庫只要任何一個物件被修改，這些clone出去的儲存就很難再合併回來，幾乎不可能任意竄改版本紀錄。
+
+>#### 定期的封裝物件
+>>只要專案中的程式碼或檔案被更新，內容不一樣時，Git就會建立一個新的物件，不同內容的檔案將會被保存下來<br>由於當專案擴大時，過多的檔案會導致存取越來越沒效率，因此Git設計有幾個機制可使一群老舊的「物件」自動封裝進一個封裝檔（packfile），以改善檔案存取效率。<br>新檔案依舊會以單一檔案的方式存在，然後某隔一段時間就會被重新封裝（repacking）。
+
+
 > #### SHA1演算法補充：
 >* 40個16進位字元組成
 >* 很微小的機率才會有碰撞
@@ -129,10 +159,6 @@
 
 
 
-
-
-'為什麼要使用他的根本原因'
-
 > ### 補充關於差分編碼編碼邏輯（workflow）
 >版本號由3部分構成，即主版本號+次版本號+修改號。
 <br> <b>1號位：主版本</b>：只有當系統在結構和功能上有重大突破改進後才發生變化
@@ -143,53 +169,68 @@
 
 ##  Git 常用指令集介紹
 
->## git 基本建立流程
-> ### git init
+>  <code>git init</code>
+><br>
 >建立一個Git新的Repository（倉庫）
 
->### git clone
+> <code> git clone </code>
+><br>
 >複製別人的Repository 當你想要抓別人的程式碼自己修改時
 
-> ### git status
+> <code> git status </code>
+><br>
 >檢查git的狀態
 
-> ### git add （.）
+> <code> git add （.）</code>
+><br>
 >讓檔案能被git追蹤
 
-> ### git commit -m ""
+> <code>git commit -m "" </code>
+><br>
 >提交檔案，讓你未來可以回溯與追蹤參考
 
-> ### git log (--stat/-p)
+> <code> git log (--stat/-p) </code>
+><br>
 >查看過去的commit紀錄。--stat是提交詳細內容;--p參數可以看到檔案更詳細的變更內容。
 
->### git rm '檔案名稱'
+> <code> git rm '檔案名稱' </code>
+><br>
 >刪除目錄快取的此檔案與工作目錄下的此檔案
 
->### git mv "原先名稱" "新改的名稱"
+> <code> git mv "原先名稱" "新改的名稱" </code>
+><br>
 >用來變更檔案或目錄的名稱
 
->### git reset　(--hard)
+> <code> git reset　(--hard) </code>
+> <br>
 >重製目前工作目錄的「索引狀態」，但是是無法拯救已被更動或刪除的檔案或目錄。參數hard可以還原到目前最新版
 
->### git checkout "分支" "檔案名稱"
+> <code> git checkout "分支" "檔案名稱" </code>
+><br>
 >救回被改壞的檔案回溯到沒修改前的版本
 
->### git diff
+> <code> git diff </code>
+><br>
 >檢視修改內容
 
->### git branch
+> <code> git branch </code>
+><br>
 >建立分支
 
->### git branch -d
+> <code> git branch -d </code>
+> <br>
 >刪掉分支
 
->### git push origin "分支名稱"
+> <code>git push origin "分支名稱" </code>
+> <br>
 >把本地端的分支推到遠端
 
->### git rebase "branch" 
+> <code> git rebase "branch" </code>
+><br> 
 >以某分為基底重接
 
->### git merge （branch）
+> <code> git merge （branch）</code>
+><br>
 >比較兩個檔案後合併分支
 ## .gitignore 配置
 >使用gitignore可以忽略一些不需要上傳的文件，使得這些文件不被git識別和追蹤，也部會被上傳到github被別人看到
@@ -211,15 +252,20 @@
 > 在版本控制中的分支「機制」，主要目的是為了解決開發過程中版本衝突的問題，然而同時也不少的版本問也是因為開始使用分支後而產生的。
 >是指向某個commit的指標
 
-> ### git branch "分支名稱"
+> <code> git branch "分支名稱" </code>
+><br>
 >建立一個分支
-> ### git checkout -b "已有分支名稱"
+
+> <code> git checkout -b "已有分支名稱" </code>
+><br>
 >將目前工作目錄切換到已有的分支
 
-> ### git checkout -b "新的分支名稱"
+> <code> git checkout -b "新的分支名稱"</code>
+><br>
 >建立一個新得分支並切換到新的分支
 
->### git branch -d "分支名稱"
+> <code> git branch -d "分支名稱"</code>
+><br>
 >刪除分支
 
 <hr>
@@ -242,17 +288,21 @@
 >* 可以任意修改某個支線上的版本，在你「分享」給其他人前
 >* 分享後便不要隨意地再更動了
 
->### git reset
+> <code> git reset </code>
+><br>
 > 可以重製工作目錄與修正版本歷史紀錄
 
->### git revert
+> <code> git revert </code>
+><br>
 > 把某個版本的變更，透過「相反」的步驟把變更給還原
 
->### git cherry-pick
+> <code> git cherry-pick </code>
+><br>
 > 一個將要廢棄的分支中手動挑出想要套用的版本變更，重新套用完全的變更
 
 
->### git rebase　"分支"
+> <code> git rebase　"分支" </code>
+><br>
 > 真正的修改Commit紀錄用途，
 
 <hr>
@@ -292,13 +342,16 @@
 <hr>
 
 ## git 進階指令
-> ### git gc 
+> <code> git gc </code>
+><br>
 >手動將過期且不被使用的物件清除掉
 
-> ### git fsck
+> <code> git fsck </code>
+><br>
 > 檢查Git維護的檔案系統是否完整
 
->### git hash-object 
+> <code> git hash-object </code>
+><br> 
 > 計算出Blob的SHA1的值
 <hr>
 
