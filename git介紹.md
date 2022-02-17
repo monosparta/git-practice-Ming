@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2022-02-14 14:37:21
- * @LastEditTime: 2022-02-17 11:25:20
+ * @LastEditTime: 2022-02-17 11:30:17
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \GIT\git介紹.md
@@ -134,17 +134,24 @@
 <img src="pic/gitflow3.png">
 
 ><br>
+
 > ### 物件結構的優點
+
 > #### * 有效率的處理大型專案
+
 >> 不僅僅是完整的版本庫會複製（clone）一份在本機，由於所有的blob物件都是透過「內容」來定址的（content addressable），因此不同版本之間找尋相同的內容，效率是非常高的。
 > #### 歷史紀錄保護
+
 >>Git版控的過程，每次提交變更都會產生一個Commit物件，而這個Commit物件的名稱又是透過commit物件的內容產生。再者，Commit物件會關聯到tree物件，tree物件的名稱又是關聯到blob與tree物件，在一層層的關聯下去，要竄改某個版本的歷史紀錄困難度很高。<br>由於儲存庫經常被clone或fork，只要是被clone過的儲存庫，來源的儲存庫只要任何一個物件被修改，這些clone出去的儲存就很難再合併回來，幾乎不可能任意竄改版本紀錄。
 
 >#### 定期的封裝物件
+
 >>只要專案中的程式碼或檔案被更新，內容不一樣時，Git就會建立一個新的物件，不同內容的檔案將會被保存下來<br>由於當專案擴大時，過多的檔案會導致存取越來越沒效率，因此Git設計有幾個機制可使一群老舊的「物件」自動封裝進一個封裝檔（packfile），以改善檔案存取效率。<br>新檔案依舊會以單一檔案的方式存在，然後某隔一段時間就會被重新封裝（repacking）。
 
 
+
 > #### SHA1演算法補充：
+
 >* 40個16進位字元組成
 >* 很微小的機率才會有碰撞
 
